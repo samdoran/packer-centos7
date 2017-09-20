@@ -1,33 +1,36 @@
 {
   "variables": {
-    "rhn_username": "{{ env `RHN_USERNAME` }}",
-    "rhn_password": "{{ env `RHN_PASSWORD` }}"
+    "rhn_password": "{{ env `RHN_PASSWORD` }}",
+    "rhn_username": "{{ env `RHN_USERNAME` }}"
   },
   "provisioners": [
     {
-      "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-      "script": "scripts/install-ansible.sh"
+      "script": "scripts/install-ansible.sh",
+      "type": "shell"
     },
     {
-      "type": "ansible-local",
-      "role_paths": [ "ansible/roles/packer-rhel" ],
-      "playbook_file": "ansible/provision.yml"
+      "playbook_file": "ansible/provision.yml",
+      "role_paths": [
+        "ansible/roles/packer-rhel"
+      ],
+      "type": "ansible-local"
     },
     {
-      "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E '{{.Path}}'",
-      "inline": [ "/sbin/reboot", "sleep 60"]
+      "inline": [ "/sbin/reboot" ],
+      "type": "shell",
+      "expect_disconnect": true,
+      "pause_before": "30s"
     },
     {
-      "type": "shell",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-      "script": "scripts/cleanup.sh"
+      "script": "scripts/cleanup.sh",
+      "type": "shell"
     }
   ],
   "builders": [
     {
-      "type": "virtualbox-iso",
       "boot_command": [
         "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart.cfg<enter><wait>"
       ],
@@ -36,19 +39,33 @@
       "guest_os_type": "RedHat_64",
       "headless": true,
       "http_directory": "http",
-      "iso_url": "iso/CentOS-7-x86_64-Minimal-1611.iso",
-      "iso_checksum": "2122784c53bd917fa60f6cb22aabee6e9cb22f8f8590c872232e42e6a7c226cc",
+      "iso_checksum": "bba314624956961a2ea31dd460cd860a77911c1e0a56e4820a12b9c5dad363f5",
       "iso_checksum_type": "sha256",
-      "ssh_username": "vagrant",
+      "iso_urls": [
+        "iso/CentOS-7-x86_64-Minimal-1708.iso",
+        "http://centos.mbni.med.umich.edu/mirror/7/isos/x86_64/CentOS-7-x86_64-Minimal-1708.iso"
+      ],
+      "output_directory": "boxes",
+      "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
       "ssh_password": "vagrant",
       "ssh_timeout": "15m",
-      "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now",
-      "output_directory": "boxes",
-      "vm_name": "packer-centos7-x86_64",
+      "ssh_username": "vagrant",
+      "type": "virtualbox-iso",
       "vboxmanage": [
-        [ "modifyvm", "{{ .Name }}", "--memory", "512" ],
-        [ "modifyvm", "{{ .Name }}", "--cpus", "1" ]
-      ]
+        [
+          "modifyvm",
+          "{{ .Name }}",
+          "--memory",
+          "512"
+        ],
+        [
+          "modifyvm",
+          "{{ .Name }}",
+          "--cpus",
+          "1"
+        ]
+      ],
+      "vm_name": "packer-centos7-x86_64"
     }
   ],
   "post-processors": [
