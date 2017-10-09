@@ -20,10 +20,10 @@
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E '{{.Path}}'",
       "inline": [ "/sbin/reboot" ],
       "type": "shell",
-      "expect_disconnect": true,
-      "pause_before": "30s"
+      "expect_disconnect": true
     },
     {
+      "pause_before": "30s",
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
       "script": "scripts/cleanup.sh",
       "type": "shell"
