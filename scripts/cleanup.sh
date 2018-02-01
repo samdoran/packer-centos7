@@ -12,6 +12,7 @@ rm -rf /var/cache/yum/*
 rm -rf /usr/share/man/*
 rm -rf /usr/share/info/*
 rm -rf /usr/share/doc/*
+rm -rf /usr/share/backgrounds/*
 
 # Zero out the rest of the free space using dd, then delete the written file.
 dd if=/dev/zero of=/EMPTY bs=1M
