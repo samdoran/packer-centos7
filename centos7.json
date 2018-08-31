@@ -1,7 +1,8 @@
 {
-  "variables": {
-    "rhn_password": "{{ env `RHN_PASSWORD` }}",
-    "rhn_username": "{{ env `RHN_USERNAME` }}"
+  "variables":{
+    "vagrant_cloud_token": "{{ env `VAGRANT_CLOUD_TOKEN` }}",
+    "version": "{{ env `VAGRANT_BOX_VERSION` }}",
+    "version_description": "{{ env `VAGRANT_BOX_DESCRIPTION` }}"
   },
   "provisioners": [
     {
@@ -69,9 +70,18 @@
     }
   ],
   "post-processors": [
-    {
-      "output": "builds/{{ .Provider }}-centos7.box",
-      "type": "vagrant"
-    }
+    [
+      {
+        "output": "builds/{{ .Provider }}-centos7.box",
+        "type": "vagrant"
+      },
+      {
+        "type": "vagrant-cloud",
+        "box_tag": "samdoran/centos7",
+        "access_token": "{{ user `vagrant_cloud_token` }}",
+        "version": "{{ user `version` }}",
+        "version_description": "{{ user `version_description` }}"
+      }
+    ]
   ]
 }
