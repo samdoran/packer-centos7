@@ -13,7 +13,7 @@
     {
       "playbook_file": "ansible/provision.yml",
       "role_paths": [
-        "ansible/roles/packer-rhel"
+        "ansible/roles/packer_rhel"
       ],
       "type": "ansible-local"
     },
